@@ -64,8 +64,8 @@ fi
 [[ -f ${RC_FILE} ]] && echo ${CAPTURE_DEVICE} > ${RC_FILE} && echo ${PLAYBACK_DEVICE} >> ${RC_FILE}
 
 # Get the currently active input and output devices
-PREVIOUS_INPUT_DEVICE=$(LC_ALL=C pactl list sources | grep -A 1 "State: RUNNING" | grep "Name" | sed -e "s/.*Name: \(.*\)/\1/")
-PREVIOUS_OUTPUT_DEVICE=$(LC_ALL=C pactl list sinks | grep -A 1 "State: RUNNING" | grep "Name" | sed -e "s/.*Name: \(.*\)/\1/")
+PREVIOUS_INPUT_DEVICE=$(LC_LANG=C pacmd list-sinks | grep ' \* index' | sed 's/[^0-9]*//')
+PREVIOUS_OUTPUT_DEVICE=$(LC_LANG=C pacmd list-sources | grep ' \* index' | sed 's/[^0-9]*//')
 
 # Suspend pulse
 pacmd suspend 1
@@ -113,8 +113,8 @@ pacmd suspend-sink jack_out 0
 screen -r calf
 
 # Set default sink and source back to their original values
-pactl set-default-source ${PREVIOUS_INPUT_DEVICE}
-pactl set-default-sink ${PREVIOUS_OUTPUT_DEVICE}
+pactl set-default-source ${PREVIOUS_OUTPUT_DEVICE}
+pactl set-default-sink ${PREVIOUS_INPUT_DEVICE}
 
 # Unload pulse sink and source
 pactl unload-module module-jack-source
